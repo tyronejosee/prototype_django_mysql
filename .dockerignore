@@ -1,0 +1,22 @@
+# Python files
+*.pyc
+__pycache__
+
+# Git files
+.git
+.github
+.gitignore
+.gitattributes
+.gitkeep
+
+# Linter files
+.editorconfig
+
+# Envs files
+env
+.envs/
+
+# Projects files
+desktop.ini
+LICENCE
+README.md
