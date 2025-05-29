@@ -1,34 +1,27 @@
-FROM python:3.10-slim-buster
+FROM python:3.12-slim
 
-# set work directory
-WORKDIR /usr/src/workdir
-
-# set environment variables
+# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# install mysql dependencies
-RUN apt-get update
-RUN apt-get install gcc default-libmysqlclient-dev -y
+# Set working directory
+WORKDIR /code
 
-# install dependencies
-RUN pip install -U pip setuptools wheel
-RUN pip install --upgrade pip
-COPY requirements/ /usr/src/workdir/requirements/
-RUN pip install -r requirements/local.txt --no-cache-dir
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    default-libmysqlclient-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# copy project
-COPY . /usr/src/workdir/
+# Copy and install requirements
+COPY requirements/ requirements/
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements/local.txt
 
-# Convert plain text files from Windows or Mac format to Unix
-RUN apt-get install dos2unix
-RUN dos2unix --newfile docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY config/entrypoint.sh /config/entrypoint.sh
+RUN chmod +x /config/entrypoint.sh
+ENTRYPOINT ["/config/entrypoint.sh"]
 
-# Make entrypoint executable
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# Copy and install app
+COPY . .
 
-# Entrypoint dependencies
-RUN apt-get install netcat -y
-
-# run entrypoint.sh
-ENTRYPOINT ["bash", "/usr/local/bin/docker-entrypoint.sh"]

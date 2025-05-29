@@ -2,8 +2,7 @@
 
 import os
 from pathlib import Path
-import sys
-from datetime import timedelta
+
 import environ
 
 
@@ -107,24 +106,16 @@ INTERNAL_IPS = env.list("INTERNAL_IPS")
 
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
 
-if "test" in sys.argv:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": env("MYSQL_DATABASE"),
+        "USER": env("MYSQL_USER"),
+        "PASSWORD": env("MYSQL_PASSWORD"),
+        "HOST": "db",
+        "PORT": "3306",
     }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.mysql",
-            "NAME": env("SQL_DATABASE"),
-            "USER": env("SQL_USER"),
-            "PASSWORD": env("SQL_PASSWORD"),
-            "HOST": "db",
-            "PORT": "3306",
-        }
-    }
+}
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
@@ -136,7 +127,6 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_CONTENT_LANGUAGE": "en",
-    # "DEFAULT_PAGINATION_CLASS": "apps.utilities.pagination.LimitSetPagination",
     "DEFAULT_FILTER_BACKENDS": [
         "rest_framework.filters.SearchFilter",
         "django_filters.rest_framework.DjangoFilterBackend",
