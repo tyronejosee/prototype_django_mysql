@@ -40,6 +40,32 @@ cp .env.example .env
 
 > Note: Make sure to correctly configure your variables before building the container.
 
+## Local Development with Docker Compose
+
+To set up your local development environment using Docker Compose, follow these steps:
+
+1.  **Copy the environment file:**
+    If you haven't already, copy the example environment file to a new `.env` file:
+    ```bash
+    cp .env.example .env
+    ```
+
+2.  **Configure your environment variables:**
+    Open the `.env` file and fill in the required environment variables. Pay special attention to the MySQL variables:
+    *   `MYSQL_ROOT_PASSWORD`: Set a strong password for the root user of the MySQL database.
+    *   `MYSQL_DATABASE`: Specify the name of the database to be created.
+    *   `MYSQL_USER`: Define a username for the application to connect to the database.
+    *   `MYSQL_PASSWORD`: Set a password for the application user.
+    *   `MYSQL_HOST`: This should be set to `db`. This is the service name defined in `docker-compose.yml` and will be used by the `web` service to connect to the database container.
+    *   `MYSQL_PORT`: This should be `3306`, which is the default MySQL port.
+
+3.  **Start the services:**
+    Once your `.env` file is configured, you can start all the services (including the web application and the database) using the following command:
+    ```bash
+    docker-compose up --build
+    ```
+    The `--build` flag ensures that Docker rebuilds your images if there have been any changes to your `Dockerfile` or application code. The first time you run this, it might take a few minutes as Docker downloads the necessary images.
+
 ## 🐳 Docker
 
 Build your container; it will take time the first time, as Docker needs to download all dependencies and build the image.
